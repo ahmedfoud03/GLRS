@@ -7,13 +7,34 @@ export const authService = {
   },
 
   /**
-   * Log in user with phone number and password
+   * Log in user with phone number or email and password
    */
-  async login(phone: string, password: string): Promise<AuthUser> {
-    const normalizedPhone = this.normalizePhone(phone);
+  async login(identifier: string, password: string): Promise<AuthUser> {
+    const trimmed = identifier.trim();
+    const isEmail = trimmed.includes('@');
+
     if (isSupabaseConfigured()) {
-      const { data, error } = await supabase.auth.signInWithPassword({ phone: normalizedPhone, password });
-      if (error) throw new Error(error.message);
+      let authResponse;
+      if (isEmail) {
+        authResponse = await supabase.auth.signInWithPassword({
+          email: trimmed.toLowerCase(),
+          password
+        });
+      } else {
+        const normalizedPhone = this.normalizePhone(trimmed);
+        authResponse = await supabase.auth.signInWithPassword({
+          phone: normalizedPhone,
+          password
+        });
+      }
+
+      const { data, error } = authResponse;
+      if (error) {
+        if (error.message.includes('Invalid login credentials')) {
+          throw new Error('بيانات الدخول غير صحيحة (اسم المستخدم أو كلمة المرور).');
+        }
+        throw new Error(error.message);
+      }
       if (!data.user) throw new Error('فشل تسجيل الدخول، يرجى المحاولة لاحقاً');
 
       // Fetch Profile
@@ -39,9 +60,13 @@ export const authService = {
       };
     } else {
       // Mock / Demo Mode
+      const normalizedPhone = this.normalizePhone(trimmed);
       const profiles = mockStore.getProfiles();
       const units = mockStore.getUnits();
-      const foundProfile = profiles.find(p => this.normalizePhone(p.phone || '') === normalizedPhone);
+      const foundProfile = profiles.find(p => 
+        (p.email && p.email.toLowerCase() === trimmed.toLowerCase()) ||
+        this.normalizePhone(p.phone || '') === normalizedPhone
+      );
 
       if (!foundProfile) {
         throw new Error('بيانات الدخول غير صحيحة، أو لم يتم العثور على الحساب التجريبي.');

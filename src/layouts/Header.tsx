@@ -3,6 +3,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useRouter } from '../contexts/RouterContext';
 import { RoleBadge } from '../components/common/Badge';
 import { HOSPITAL_INFO } from '../lib/constants';
+import { isSupabaseConfigured } from '../lib/supabase';
 import { formatArabicDate, getTodayDateString } from '../utils/dateUtils';
 import { 
   LogOut, 
@@ -90,82 +91,84 @@ export const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
 
         {/* Right / End: User Profile & Demo Switcher */}
         <div className="flex items-center gap-2 sm:gap-3">
-          {/* Quick Demo Role Switcher */}
-          <div className="relative" ref={demoMenuRef}>
-            <button
-              type="button"
-              onClick={() => { setIsDemoMenuOpen(prev => !prev); setIsUserMenuOpen(false); }}
-              className="flex items-center gap-1.5 min-h-10 px-2.5 py-1.5 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold hover:bg-emerald-100 transition-colors"
-              title="تبديل الدور للتجربة"
-            >
-              <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
-              <span className="hidden sm:inline">تبديل الحساب التجريبي</span>
-              <ChevronDown className="w-3 h-3" />
-            </button>
-
-            {isDemoMenuOpen && (
-              <div
-                className="absolute left-0 mt-2 w-[calc(100vw-1.5rem)] max-w-64 bg-white rounded-xl shadow-xl border border-slate-200 py-2 z-50 text-right animate-fadeIn"
-                onClick={() => setIsDemoMenuOpen(false)}
+          {/* Quick Demo Role Switcher (Hidden when live database is active) */}
+          {!isSupabaseConfigured() && (
+            <div className="relative" ref={demoMenuRef}>
+              <button
+                type="button"
+                onClick={() => { setIsDemoMenuOpen(prev => !prev); setIsUserMenuOpen(false); }}
+                className="flex items-center gap-1.5 min-h-10 px-2.5 py-1.5 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold hover:bg-emerald-100 transition-colors"
+                title="تبديل الدور للتجربة"
               >
-                <div className="px-3 py-1.5 text-[11px] font-bold text-slate-400 border-b border-slate-100">
-                  اختر الحساب والدور للمعاينة الفورية:
+                <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
+                <span className="hidden sm:inline">تبديل الحساب التجريبي</span>
+                <ChevronDown className="w-3 h-3" />
+              </button>
+
+              {isDemoMenuOpen && (
+                <div
+                  className="absolute left-0 mt-2 w-[calc(100vw-1.5rem)] max-w-64 bg-white rounded-xl shadow-xl border border-slate-200 py-2 z-50 text-right animate-fadeIn"
+                  onClick={() => setIsDemoMenuOpen(false)}
+                >
+                  <div className="px-3 py-1.5 text-[11px] font-bold text-slate-400 border-b border-slate-100">
+                    اختر الحساب والدور للمعاينة الفورية:
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => switchDemoRole('super_admin')}
+                    className="w-full px-3 py-2 text-xs text-slate-800 hover:bg-slate-50 flex items-center justify-between"
+                  >
+                    <div className="flex flex-col text-right">
+                      <span className="font-bold">المسؤول التقني</span>
+                      <span className="text-[10px] text-purple-700">تقنية المعلومات والتسويق</span>
+                    </div>
+                    <RoleBadge role="super_admin" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => switchDemoRole('admin')}
+                    className="w-full px-3 py-2 text-xs text-slate-800 hover:bg-slate-50 flex items-center justify-between"
+                  >
+                    <div className="flex flex-col text-right">
+                      <span className="font-bold">د. خالد العمري</span>
+                      <span className="text-[10px] text-sky-700">مدير عام المستشفى</span>
+                    </div>
+                    <RoleBadge role="admin" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      switchDemoRole('reporter', 'cccccccc-cccc-cccc-cccc-cccccccccccc')
+                    }
+                    className="w-full px-3 py-2 text-xs text-slate-800 hover:bg-slate-50 flex items-center justify-between"
+                  >
+                    <span className="font-bold">مسؤول الصيدلية</span>
+                    <RoleBadge role="reporter" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      switchDemoRole('reporter', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb')
+                    }
+                    className="w-full px-3 py-2 text-xs text-slate-800 hover:bg-slate-50 flex items-center justify-between"
+                  >
+                    <span className="font-bold">مشرف التمريض</span>
+                    <RoleBadge role="reporter" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      switchDemoRole('reporter', '77777777-7777-7777-7777-777777777777')
+                    }
+                    className="w-full px-3 py-2 text-xs text-slate-800 hover:bg-slate-50 flex items-center justify-between"
+                  >
+                    <span className="font-bold">المستلم الليلي</span>
+                    <RoleBadge role="reporter" />
+                  </button>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => switchDemoRole('super_admin')}
-                  className="w-full px-3 py-2 text-xs text-slate-800 hover:bg-slate-50 flex items-center justify-between"
-                >
-                  <div className="flex flex-col text-right">
-                    <span className="font-bold">المسؤول التقني</span>
-                    <span className="text-[10px] text-purple-700">تقنية المعلومات والتسويق</span>
-                  </div>
-                  <RoleBadge role="super_admin" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => switchDemoRole('admin')}
-                  className="w-full px-3 py-2 text-xs text-slate-800 hover:bg-slate-50 flex items-center justify-between"
-                >
-                  <div className="flex flex-col text-right">
-                    <span className="font-bold">د. خالد العمري</span>
-                    <span className="text-[10px] text-sky-700">مدير عام المستشفى</span>
-                  </div>
-                  <RoleBadge role="admin" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() =>
-                    switchDemoRole('reporter', 'cccccccc-cccc-cccc-cccc-cccccccccccc')
-                  }
-                  className="w-full px-3 py-2 text-xs text-slate-800 hover:bg-slate-50 flex items-center justify-between"
-                >
-                  <span className="font-bold">مسؤول الصيدلية</span>
-                  <RoleBadge role="reporter" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() =>
-                    switchDemoRole('reporter', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb')
-                  }
-                  className="w-full px-3 py-2 text-xs text-slate-800 hover:bg-slate-50 flex items-center justify-between"
-                >
-                  <span className="font-bold">مشرف التمريض</span>
-                  <RoleBadge role="reporter" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() =>
-                    switchDemoRole('reporter', '77777777-7777-7777-7777-777777777777')
-                  }
-                  className="w-full px-3 py-2 text-xs text-slate-800 hover:bg-slate-50 flex items-center justify-between"
-                >
-                  <span className="font-bold">المستلم الليلي</span>
-                  <RoleBadge role="reporter" />
-                </button>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+          )}
 
           {/* User Profile Pill */}
           {user && (

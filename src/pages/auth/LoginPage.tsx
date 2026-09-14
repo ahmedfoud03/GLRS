@@ -4,6 +4,7 @@ import { useRouter } from '../../contexts/RouterContext';
 import { Button } from '../../components/common/Button';
 import { Input } from '../../components/common/Input';
 import { HOSPITAL_INFO } from '../../lib/constants';
+import { isSupabaseConfigured } from '../../lib/supabase';
 import { useToast } from '../../contexts/ToastContext';
 import { 
   LogIn, 
@@ -102,11 +103,11 @@ export const LoginPage: React.FC = () => {
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-4 text-right">
             <Input
-              type="tel"
-              inputMode="tel"
-              dir="ltr"
-              label="رقم الهاتف"
-              placeholder="+967 7XX XXX XXX"
+              type="text"
+              inputMode="text"
+              dir="auto"
+              label="البريد الإلكتروني أو رقم الهاتف"
+              placeholder="مثال: admin@greenland.hospital أو 7XX XXX XXX"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               requiredIndicator
@@ -135,64 +136,66 @@ export const LoginPage: React.FC = () => {
             </Button>
           </form>
 
-          {/* Demo Quick Access Section */}
-          <div className="mt-8 pt-6 border-t border-slate-100 text-right">
-            <div className="flex items-center justify-between gap-2 mb-3">
-              <span className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
-                الدخول السريع بالحسابات التجريبية:
-              </span>
-              <span className="text-[10px] text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded-full">
-                تجربة فورية
-              </span>
+          {/* Demo Quick Access Section (Only in local offline demo mode) */}
+          {!isSupabaseConfigured() && (
+            <div className="mt-8 pt-6 border-t border-slate-100 text-right">
+              <div className="flex items-center justify-between gap-2 mb-3">
+                <span className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
+                  الدخول السريع بالحسابات التجريبية:
+                </span>
+                <span className="text-[10px] text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded-full">
+                  تجربة فورية
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => handleQuickDemoLogin('super_admin')}
+                  disabled={loading}
+                  className="p-2.5 rounded-xl border border-purple-200 bg-purple-50/50 hover:bg-purple-100/60 text-right text-xs transition-colors"
+                >
+                  <p className="font-bold text-purple-900">المسؤول التقني عن المستشفى</p>
+                  <p className="text-[10px] text-purple-600">Super Admin (IT والتسويق + كامل الصلاحيات)</p>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleQuickDemoLogin('admin')}
+                  disabled={loading}
+                  className="p-2.5 rounded-xl border border-sky-200 bg-sky-50/50 hover:bg-sky-100/60 text-right text-xs transition-colors"
+                >
+                  <p className="font-bold text-sky-900">مدير عام المستشفى</p>
+                  <p className="text-[10px] text-sky-600">Admin (إطلاع ومتابعة كافة التقارير)</p>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    handleQuickDemoLogin('reporter', 'cccccccc-cccc-cccc-cccc-cccccccccccc')
+                  }
+                  disabled={loading}
+                  className="p-2.5 rounded-xl border border-emerald-200 bg-emerald-50/50 hover:bg-emerald-100/60 text-right text-xs transition-colors"
+                >
+                  <p className="font-bold text-emerald-900">مسؤول الصيدلية</p>
+                  <p className="text-[10px] text-emerald-600">Reporter (نموذج الصيدلية)</p>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    handleQuickDemoLogin('reporter', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb')
+                  }
+                  disabled={loading}
+                  className="p-2.5 rounded-xl border border-amber-200 bg-amber-50/50 hover:bg-amber-100/60 text-right text-xs transition-colors"
+                >
+                  <p className="font-bold text-amber-900">مشرف التمريض</p>
+                  <p className="text-[10px] text-amber-600">Reporter (النموذج العام)</p>
+                </button>
+              </div>
             </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              <button
-                type="button"
-                onClick={() => handleQuickDemoLogin('super_admin')}
-                disabled={loading}
-                className="p-2.5 rounded-xl border border-purple-200 bg-purple-50/50 hover:bg-purple-100/60 text-right text-xs transition-colors"
-              >
-                <p className="font-bold text-purple-900">المسؤول التقني عن المستشفى</p>
-                <p className="text-[10px] text-purple-600">Super Admin (IT والتسويق + كامل الصلاحيات)</p>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleQuickDemoLogin('admin')}
-                disabled={loading}
-                className="p-2.5 rounded-xl border border-sky-200 bg-sky-50/50 hover:bg-sky-100/60 text-right text-xs transition-colors"
-              >
-                <p className="font-bold text-sky-900">مدير عام المستشفى</p>
-                <p className="text-[10px] text-sky-600">Admin (إطلاع ومتابعة كافة التقارير)</p>
-              </button>
-
-              <button
-                type="button"
-                onClick={() =>
-                  handleQuickDemoLogin('reporter', 'cccccccc-cccc-cccc-cccc-cccccccccccc')
-                }
-                disabled={loading}
-                className="p-2.5 rounded-xl border border-emerald-200 bg-emerald-50/50 hover:bg-emerald-100/60 text-right text-xs transition-colors"
-              >
-                <p className="font-bold text-emerald-900">مسؤول الصيدلية</p>
-                <p className="text-[10px] text-emerald-600">Reporter (نموذج الصيدلية)</p>
-              </button>
-
-              <button
-                type="button"
-                onClick={() =>
-                  handleQuickDemoLogin('reporter', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb')
-                }
-                disabled={loading}
-                className="p-2.5 rounded-xl border border-amber-200 bg-amber-50/50 hover:bg-amber-100/60 text-right text-xs transition-colors"
-              >
-                <p className="font-bold text-amber-900">مشرف التمريض</p>
-                <p className="text-[10px] text-amber-600">Reporter (النموذج العام)</p>
-              </button>
-            </div>
-          </div>
+          )}
         </div>
 
         {/* Footer Note */}
