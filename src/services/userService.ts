@@ -1,5 +1,6 @@
 import { supabase, isSupabaseConfigured, mockStore } from '../lib/supabase';
 import { Profile, UserRole } from '../types';
+import { authService } from './authService';
 
 export const userService = {
   /**
@@ -57,9 +58,10 @@ export const userService = {
           throw new Error('رقم الهاتف مطلوب لإنشاء حساب المستخدم.');
         }
 
+        const normalizedPhone = authService.normalizePhone(user.phone);
         // Phone/password account: email is not used for authentication.
         const { data: authData, error: authError } = await supabase.auth.signUp({
-          phone: user.phone.replace(/[\s\-()]/g, ''),
+          phone: normalizedPhone,
           password: user.password || 'Glrs@2026',
           options: {
             data: {

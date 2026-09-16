@@ -104,10 +104,10 @@ export const LoginPage: React.FC = () => {
           <form onSubmit={handleSubmit} className="flex flex-col gap-4 text-right">
             <Input
               type="text"
-              inputMode="text"
+              inputMode="tel"
               dir="auto"
-              label="البريد الإلكتروني أو رقم الهاتف"
-              placeholder="مثال: admin@greenland.hospital أو 7XX XXX XXX"
+              label="رقم الهاتف"
+              placeholder="مثال: 777 111 222 أو +967 7XX XXX XXX"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               requiredIndicator

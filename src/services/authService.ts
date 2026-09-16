@@ -3,7 +3,17 @@ import { Profile, AuthUser } from '../types';
 
 export const authService = {
   normalizePhone(phone: string): string {
-    return phone.replace(/[\s\-()]/g, '');
+    let cleaned = phone.replace(/[\s\-()]/g, '');
+    if (cleaned.startsWith('00')) {
+      cleaned = '+' + cleaned.substring(2);
+    } else if (cleaned.startsWith('07') && cleaned.length === 10) {
+      cleaned = '+967' + cleaned.substring(1);
+    } else if (cleaned.startsWith('7') && cleaned.length === 9) {
+      cleaned = '+967' + cleaned;
+    } else if (!cleaned.startsWith('+') && cleaned.startsWith('967')) {
+      cleaned = '+' + cleaned;
+    }
+    return cleaned;
   },
 
   /**
