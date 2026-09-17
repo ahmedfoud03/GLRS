@@ -58,11 +58,34 @@ export const userService = {
           throw new Error('رقم الهاتف مطلوب لإنشاء حساب المستخدم.');
         }
 
+        // 1. Try atomic admin RPC (keeps super_admin logged in, confirms user immediately)
+        const { data: rpcData, error: rpcErr } = await supabase.rpc('admin_create_user', {
+          p_phone: user.phone.trim(),
+          p_full_name: user.full_name.trim(),
+          p_role: user.role,
+          p_unit_id: user.reporting_unit_id || null,
+          p_password: user.password || 'Glrs@2026'
+        });
+
+        if (!rpcErr && rpcData) {
+          const { data: fullProf } = await supabase
+            .from('profiles')
+            .select('*, reporting_unit:reporting_units(*)')
+            .eq('id', rpcData.id)
+            .single();
+          return fullProf || rpcData;
+        }
+
+        // If RPC returned a business error (e.g. duplicate phone, permission), surface it
+        if (rpcErr && !rpcErr.message.toLowerCase().includes('function') && !rpcErr.message.toLowerCase().includes('not found')) {
+          throw new Error(rpcErr.message);
+        }
+
+        // 2. Fallback to client signup if RPC is not yet created in SQL
         const cleanDigits = user.phone.replace(/[\s\-()+]/g, '');
         const virtualEmail = `${cleanDigits}@glrs.internal`;
         const normalizedPhone = authService.normalizePhone(user.phone);
 
-        // Sign up with virtual email so no external SMS gateway is needed
         const { data: authData, error: authError } = await supabase.auth.signUp({
           email: virtualEmail,
           password: user.password || 'Glrs@2026',
