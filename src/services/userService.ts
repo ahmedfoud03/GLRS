@@ -58,14 +58,18 @@ export const userService = {
           throw new Error('رقم الهاتف مطلوب لإنشاء حساب المستخدم.');
         }
 
+        const cleanDigits = user.phone.replace(/[\s\-()+]/g, '');
+        const virtualEmail = `${cleanDigits}@glrs.internal`;
         const normalizedPhone = authService.normalizePhone(user.phone);
-        // Phone/password account: email is not used for authentication.
+
+        // Sign up with virtual email so no external SMS gateway is needed
         const { data: authData, error: authError } = await supabase.auth.signUp({
-          phone: normalizedPhone,
+          email: virtualEmail,
           password: user.password || 'Glrs@2026',
           options: {
             data: {
               full_name: user.full_name,
+              phone: normalizedPhone,
               role: user.role
             }
           }

@@ -31,11 +31,28 @@ export const authService = {
           password
         });
       } else {
-        const normalizedPhone = this.normalizePhone(trimmed);
-        authResponse = await supabase.auth.signInWithPassword({
-          phone: normalizedPhone,
+        const cleanDigits = trimmed.replace(/[\s\-()+]/g, '');
+        const virtualEmail = `${cleanDigits}@glrs.internal`;
+
+        // 1. Try virtual phone email (standard email provider, zero external SMS provider needed)
+        let loginRes = await supabase.auth.signInWithPassword({
+          email: virtualEmail,
           password
         });
+
+        // 2. If not found, try with normalized phone (native phone provider)
+        if (loginRes.error) {
+          const normalizedPhone = this.normalizePhone(trimmed);
+          const phoneRes = await supabase.auth.signInWithPassword({
+            phone: normalizedPhone,
+            password
+          });
+          if (!phoneRes.error) {
+            loginRes = phoneRes;
+          }
+        }
+
+        authResponse = loginRes;
       }
 
       const { data, error } = authResponse;
