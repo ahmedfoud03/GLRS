@@ -9,7 +9,7 @@ import { DynamicReportForm } from '../../components/reports/DynamicReportForm';
 import { Spinner } from '../../components/common/Spinner';
 import { Button } from '../../components/common/Button';
 import { useToast } from '../../contexts/ToastContext';
-import { getTodayDateString, formatArabicDate } from '../../utils/dateUtils';
+import { getTodayDateString, formatArabicDate, formatNumericDate } from '../../utils/dateUtils';
 import { ArrowRight, FilePlus, AlertCircle, Building2, Layers, HelpCircle, Laptop, Megaphone } from 'lucide-react';
 import { Link } from '../../components/common/Link';
 
@@ -279,7 +279,7 @@ export const CreateReportPage: React.FC = () => {
             إنشاء التقرير اليومي - {activeUnit.name}
           </h2>
           <p className="text-xs text-slate-500 mt-0.5">
-            تعبئة بيانات وإنجازات يوم {formatArabicDate(todayStr)} ({template.name})
+            تعبئة بيانات وإنجازات يوم {formatArabicDate(todayStr)} (<span className="font-mono">{formatNumericDate(todayStr)}</span>) - {template.name}
           </p>
         </div>
 

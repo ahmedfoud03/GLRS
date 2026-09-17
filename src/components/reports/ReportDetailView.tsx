@@ -5,7 +5,7 @@ import { Button } from '../common/Button';
 import { ReviewTimeline } from './ReviewTimeline';
 import { ReturnReportModal } from '../admin/ReturnReportModal';
 import { ConfirmDialog } from '../common/ConfirmDialog';
-import { formatArabicDate, formatArabicDateTime } from '../../utils/dateUtils';
+import { formatArabicDate, formatArabicDateTime, formatNumericDate } from '../../utils/dateUtils';
 import { formatFileSize, isImageFile } from '../../utils/formatters';
 import { storageService } from '../../services/storageService';
 import { HOSPITAL_INFO } from '../../lib/constants';
@@ -155,7 +155,7 @@ export const ReportDetailView: React.FC<ReportDetailViewProps> = ({
             <Calendar className="w-4 h-4 text-emerald-600 shrink-0" />
             <div>
               <span className="text-slate-400 block text-[11px]">تاريخ التقرير:</span>
-              <span className="font-bold text-slate-800">{formatArabicDate(report.report_date)}</span>
+              <span className="font-bold text-slate-800 font-mono">{formatNumericDate(report.report_date)}</span>
             </div>
           </div>
 
@@ -235,6 +235,10 @@ export const ReportDetailView: React.FC<ReportDetailViewProps> = ({
                     <span className="text-xs font-bold text-slate-700">
                       {val ? '✓ نعم / منطبق' : '✗ لا'}
                     </span>
+                  ) : field.field_type === 'date' && typeof val === 'string' ? (
+                    <p className="text-xs font-mono font-bold text-slate-700">
+                      {formatNumericDate(val)}
+                    </p>
                   ) : (
                     <p className="text-xs text-slate-700 whitespace-pre-wrap leading-relaxed">
                       {String(val)}

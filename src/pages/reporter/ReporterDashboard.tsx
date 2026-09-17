@@ -7,7 +7,7 @@ import { Button } from '../../components/common/Button';
 import { ReportBadge } from '../../components/common/Badge';
 import { Spinner } from '../../components/common/Spinner';
 import { Link } from '../../components/common/Link';
-import { formatArabicDate, formatArabicDateTime, getTodayDateString } from '../../utils/dateUtils';
+import { formatArabicDate, formatArabicDateTime, formatNumericDate, getTodayDateString } from '../../utils/dateUtils';
 import { 
   PlusCircle, 
   FileEdit, 
@@ -259,7 +259,7 @@ export const ReporterDashboard: React.FC = () => {
                   </div>
                   <div>
                     <h4 className="text-xs font-bold text-slate-900">
-                      تقرير يوم: {formatArabicDate(rep.report_date)}
+                      تقرير يوم: <span className="font-mono">{formatNumericDate(rep.report_date)}</span>
                     </h4>
                     <span className="text-[11px] text-slate-400">
                       {rep.submitted_at

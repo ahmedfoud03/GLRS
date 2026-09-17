@@ -8,7 +8,7 @@ import { ReturnReportModal } from '../../components/admin/ReturnReportModal';
 import { Spinner } from '../../components/common/Spinner';
 import { Button } from '../../components/common/Button';
 import { useToast } from '../../contexts/ToastContext';
-import { formatArabicDate, getTodayDateString } from '../../utils/dateUtils';
+import { formatArabicDate, formatNumericDate, getTodayDateString } from '../../utils/dateUtils';
 import { 
   FileCheck2, 
   Calendar, 
@@ -108,7 +108,7 @@ export const AdminDashboard: React.FC = () => {
 
           <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-2.5 rounded-xl border border-white/20 text-xs">
             <Calendar className="w-4 h-4 text-emerald-300" />
-            <span className="font-bold">{formatArabicDate(selectedDate)}</span>
+            <span className="font-bold">{formatArabicDate(selectedDate)} (<span className="font-mono">{formatNumericDate(selectedDate)}</span>)</span>
           </div>
         </div>
       </div>

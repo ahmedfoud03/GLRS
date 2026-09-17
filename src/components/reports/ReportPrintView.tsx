@@ -1,7 +1,7 @@
 import React from 'react';
 import { DailyReport } from '../../types';
 import { HOSPITAL_INFO } from '../../lib/constants';
-import { formatArabicDate, formatArabicDateTime } from '../../utils/dateUtils';
+import { formatArabicDate, formatArabicDateTime, formatNumericDate } from '../../utils/dateUtils';
 import { REPORT_STATUSES } from '../../lib/constants';
 import { formatFileSize, isImageFile } from '../../utils/formatters';
 
@@ -71,8 +71,8 @@ export const ReportPrintView: React.FC<ReportPrintViewProps> = ({ report }) => {
             <td className="border border-slate-400 bg-slate-100 p-2 font-bold w-1/4">
               تاريخ التقرير:
             </td>
-            <td className="border border-slate-400 p-2 w-1/4">
-              {formatArabicDate(report.report_date)}
+            <td className="border border-slate-400 p-2 w-1/4 font-mono font-bold">
+              {formatNumericDate(report.report_date)}
             </td>
             <td className="border border-slate-400 bg-slate-100 p-2 font-bold w-1/4">
               الجهة / القسم:
@@ -149,6 +149,8 @@ export const ReportPrintView: React.FC<ReportPrintViewProps> = ({ report }) => {
                     <span>{val.join(' ، ')}</span>
                   ) : typeof val === 'boolean' ? (
                     <span>{val ? 'نعم / منطبق' : 'لا'}</span>
+                  ) : field.field_type === 'date' && typeof val === 'string' ? (
+                    <span className="font-mono font-bold">{formatNumericDate(val)}</span>
                   ) : (
                     <p className="whitespace-pre-wrap leading-relaxed">{String(val)}</p>
                   )}

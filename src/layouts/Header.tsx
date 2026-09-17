@@ -4,7 +4,7 @@ import { useRouter } from '../contexts/RouterContext';
 import { RoleBadge } from '../components/common/Badge';
 import { HOSPITAL_INFO } from '../lib/constants';
 import { isSupabaseConfigured } from '../lib/supabase';
-import { formatArabicDate, getTodayDateString } from '../utils/dateUtils';
+import { formatArabicDate, formatNumericDate, getTodayDateString } from '../utils/dateUtils';
 import { 
   LogOut, 
   User, 
@@ -86,7 +86,7 @@ export const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
         {/* Center: Today's Date Badge */}
         <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-xs font-semibold text-slate-700">
           <Calendar className="w-3.5 h-3.5 text-emerald-700" />
-          <span>{formatArabicDate(todayStr)}</span>
+          <span>{formatArabicDate(todayStr)} (<span className="font-mono text-emerald-800">{formatNumericDate(todayStr)}</span>)</span>
         </div>
 
         {/* Right / End: User Profile & Demo Switcher */}

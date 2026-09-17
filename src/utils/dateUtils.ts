@@ -56,11 +56,38 @@ export const formatArabicTime = (timeStr?: string | null): string => {
 };
 
 /**
- * Formats full date and time
+ * Formats a date into standard numeric DD/MM/YYYY format
+ * e.g., "17/09/2026"
+ */
+export const formatNumericDate = (dateStr?: string | null): string => {
+  if (!dateStr) return '—';
+  try {
+    const clean = String(dateStr).trim();
+    const isoMatch = clean.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+    if (isoMatch) {
+      const year = isoMatch[1];
+      const month = isoMatch[2].padStart(2, '0');
+      const day = isoMatch[3].padStart(2, '0');
+      return `${day}/${month}/${year}`;
+    }
+    const d = new Date(clean);
+    if (isNaN(d.getTime())) return dateStr;
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const year = d.getFullYear();
+    return `${day}/${month}/${year}`;
+  } catch {
+    return dateStr;
+  }
+};
+
+/**
+ * Formats full date and time using numeric DD/MM/YYYY format
+ * e.g., "17/09/2026 - 08:30 ص"
  */
 export const formatArabicDateTime = (dateTimeStr?: string | null): string => {
   if (!dateTimeStr) return '—';
-  return `${formatArabicDate(dateTimeStr)} - ${formatArabicTime(dateTimeStr)}`;
+  return `${formatNumericDate(dateTimeStr)} - ${formatArabicTime(dateTimeStr)}`;
 };
 
 /**

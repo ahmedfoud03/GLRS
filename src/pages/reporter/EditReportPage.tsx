@@ -7,7 +7,7 @@ import { DynamicReportForm } from '../../components/reports/DynamicReportForm';
 import { Spinner } from '../../components/common/Spinner';
 import { Button } from '../../components/common/Button';
 import { useToast } from '../../contexts/ToastContext';
-import { formatArabicDate } from '../../utils/dateUtils';
+import { formatArabicDate, formatNumericDate } from '../../utils/dateUtils';
 import { ArrowRight, FileEdit, AlertCircle } from 'lucide-react';
 import { Link } from '../../components/common/Link';
 
@@ -128,7 +128,7 @@ export const EditReportPage: React.FC<{ reportId: string }> = ({ reportId }) => 
             تعديل التقرير اليومي - {report.reporting_unit?.name}
           </h2>
           <p className="text-xs text-slate-500 mt-0.5">
-            تاريخ التقرير: {formatArabicDate(report.report_date)}
+            تاريخ التقرير: {formatArabicDate(report.report_date)} (<span className="font-mono">{formatNumericDate(report.report_date)}</span>)
           </p>
         </div>
 

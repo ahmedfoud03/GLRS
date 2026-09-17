@@ -7,7 +7,7 @@ import { ConfirmDialog } from '../common/ConfirmDialog';
 import { validateReportAnswers } from '../../utils/validators';
 import { useToast } from '../../contexts/ToastContext';
 import { Save, Send, AlertCircle, Info, Calendar } from 'lucide-react';
-import { formatArabicDate } from '../../utils/dateUtils';
+import { formatArabicDate, formatNumericDate } from '../../utils/dateUtils';
 
 interface DynamicReportFormProps {
   template: ReportTemplate;
@@ -145,7 +145,7 @@ export const DynamicReportForm: React.FC<DynamicReportFormProps> = ({
       <div className="flex flex-wrap items-center justify-between gap-3 p-4 rounded-xl bg-emerald-50/60 border border-emerald-200">
         <div className="flex items-center gap-2 text-xs font-semibold text-emerald-900">
           <Calendar className="w-4 h-4 text-emerald-700" />
-          <span>تقرير يوم: {formatArabicDate(reportDate)}</span>
+          <span>تقرير يوم: {formatArabicDate(reportDate)} (<span className="font-mono">{formatNumericDate(reportDate)}</span>)</span>
           <span className="text-slate-300">|</span>
           <span>الجهة: {unitName}</span>
         </div>

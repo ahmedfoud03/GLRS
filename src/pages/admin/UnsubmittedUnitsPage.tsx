@@ -4,7 +4,7 @@ import { UnsubmittedUnitInfo } from '../../types';
 import { ReportBadge, UnitTypeBadge } from '../../components/common/Badge';
 import { Button } from '../../components/common/Button';
 import { Spinner } from '../../components/common/Spinner';
-import { formatArabicDate, getTodayDateString } from '../../utils/dateUtils';
+import { formatArabicDate, formatNumericDate, getTodayDateString } from '../../utils/dateUtils';
 import { 
   AlertTriangle, 
   Phone, 
@@ -50,7 +50,7 @@ export const UnsubmittedUnitsPage: React.FC = () => {
             كشف الجهات والأقسام التي لم ترفع التقرير اليومي
           </h2>
           <p className="text-xs text-slate-500 mt-0.5">
-            حصر دقيق للأقسام والخدمات المتأخرة عن رفع تقرير يوم {formatArabicDate(selectedDate)} مع بيانات التواصل
+            حصر دقيق للأقسام والخدمات المتأخرة عن رفع تقرير يوم {formatArabicDate(selectedDate)} (<span className="font-mono">{formatNumericDate(selectedDate)}</span>) مع بيانات التواصل
           </p>
         </div>
 
@@ -85,7 +85,7 @@ export const UnsubmittedUnitsPage: React.FC = () => {
             ممتاز! كافة الجهات قامت برفع التقرير اليومي بنجاح
           </h3>
           <p className="text-xs text-emerald-700">
-            لا توجد أي جهة متأخرة عن تسليم تقرير يوم {formatArabicDate(selectedDate)}.
+            لا توجد أي جهة متأخرة عن تسليم تقرير يوم {formatArabicDate(selectedDate)} (<span className="font-mono">{formatNumericDate(selectedDate)}</span>).
           </p>
         </div>
       ) : (

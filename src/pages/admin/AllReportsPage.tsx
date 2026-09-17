@@ -5,7 +5,7 @@ import { DailyReport, ReportingUnit } from '../../types';
 import { ReportBadge, UnitTypeBadge } from '../../components/common/Badge';
 import { Button } from '../../components/common/Button';
 import { Spinner } from '../../components/common/Spinner';
-import { formatArabicDate, formatArabicDateTime } from '../../utils/dateUtils';
+import { formatArabicDate, formatArabicDateTime, formatNumericDate } from '../../utils/dateUtils';
 import { 
   Layers, 
   Search, 
@@ -69,7 +69,8 @@ export const AllReportsPage: React.FC = () => {
           rep.reporting_unit.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
         (rep.user?.full_name &&
           rep.user.full_name.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        rep.report_date.includes(searchTerm);
+        rep.report_date.includes(searchTerm) ||
+        formatNumericDate(rep.report_date).includes(searchTerm);
 
       const matchDate = !selectedDate || rep.report_date === selectedDate;
       const matchUnit = selectedUnitId === 'all' || rep.reporting_unit_id === selectedUnitId;
@@ -119,7 +120,7 @@ export const AllReportsPage: React.FC = () => {
           <div className="relative lg:col-span-2">
             <button type="button" className="date-filter-display" onClick={openDatePicker}>
               <Calendar className="w-4 h-4 text-slate-400 shrink-0" />
-              <span>{selectedDate ? formatArabicDate(selectedDate) : 'اختر التاريخ'}</span>
+              <span className="font-mono">{selectedDate ? formatNumericDate(selectedDate) : 'اختر التاريخ'}</span>
             </button>
             <input
               ref={dateInputRef}
@@ -208,8 +209,8 @@ export const AllReportsPage: React.FC = () => {
                 <tr key={rep.id} className="hover:bg-slate-50/70 transition-colors">
                   <td className="p-3.5 font-bold text-slate-900">
                     <div className="flex items-center gap-2">
-                      <Calendar className="w-4 h-4 text-emerald-600" />
-                      <span>{formatArabicDate(rep.report_date)}</span>
+                      <Calendar className="w-4 h-4 text-emerald-600 shrink-0" />
+                      <span className="font-mono text-xs">{formatNumericDate(rep.report_date)}</span>
                     </div>
                   </td>
 
@@ -266,7 +267,7 @@ export const AllReportsPage: React.FC = () => {
                     {rep.reporting_unit?.name || 'الجهة'}
                   </h4>
                   <p className="text-xs text-slate-500 mt-0.5">
-                    تاريخ: {formatArabicDate(rep.report_date)}
+                    تاريخ: <span className="font-mono">{formatNumericDate(rep.report_date)}</span>
                   </p>
                 </div>
                 <ReportBadge status={rep.status} />

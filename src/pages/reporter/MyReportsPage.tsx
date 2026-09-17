@@ -5,7 +5,7 @@ import { DailyReport } from '../../types';
 import { ReportBadge } from '../../components/common/Badge';
 import { Button } from '../../components/common/Button';
 import { Spinner } from '../../components/common/Spinner';
-import { formatArabicDate, formatArabicDateTime } from '../../utils/dateUtils';
+import { formatArabicDate, formatArabicDateTime, formatNumericDate } from '../../utils/dateUtils';
 import { 
   FileText, 
   Search, 
@@ -69,6 +69,7 @@ export const MyReportsPage: React.FC = () => {
       const matchUnit = unitFilter === 'all' || rep.reporting_unit_id === unitFilter;
       const matchSearch =
         rep.report_date.includes(searchTerm) ||
+        formatNumericDate(rep.report_date).includes(searchTerm) ||
         (rep.reporting_unit?.name && rep.reporting_unit.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
         (rep.template?.name && rep.template.name.toLowerCase().includes(searchTerm.toLowerCase()));
       return matchStatus && matchUnit && matchSearch;
@@ -129,7 +130,7 @@ export const MyReportsPage: React.FC = () => {
             </span>
             <input
               type="text"
-              placeholder="بحث بالتاريخ (YYYY-MM-DD) أو القسم أو النموذج..."
+              placeholder="بحث بالتاريخ (DD/MM/YYYY) أو القسم أو النموذج..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="glrs-input search-input text-xs"
@@ -192,8 +193,8 @@ export const MyReportsPage: React.FC = () => {
                   <tr key={rep.id} className="hover:bg-slate-50/70 transition-colors">
                     <td className="p-3.5 font-bold text-slate-900">
                       <div className="flex items-center gap-2">
-                        <Calendar className="w-4 h-4 text-emerald-600" />
-                        <span>{formatArabicDate(rep.report_date)}</span>
+                        <Calendar className="w-4 h-4 text-emerald-600 shrink-0" />
+                        <span className="font-mono text-xs">{formatNumericDate(rep.report_date)}</span>
                       </div>
                     </td>
 
@@ -254,7 +255,7 @@ export const MyReportsPage: React.FC = () => {
                 <div className="flex items-start justify-between gap-2">
                   <div>
                     <h4 className="text-sm font-bold text-slate-900">
-                      تقرير يوم: {formatArabicDate(rep.report_date)}
+                      تقرير يوم: <span className="font-mono">{formatNumericDate(rep.report_date)}</span>
                     </h4>
                     <span className="text-xs text-slate-500">{rep.template?.name}</span>
                   </div>
