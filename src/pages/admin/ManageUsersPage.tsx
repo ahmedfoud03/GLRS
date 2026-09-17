@@ -136,10 +136,12 @@ export const ManageUsersPage: React.FC = () => {
                 </td>
 
                 <td className="p-3.5 text-slate-600">
-                  <p className="text-xs font-semibold text-slate-800 flex items-center gap-1.5" dir="ltr">
+                  <div className="flex items-center gap-1.5 justify-start" dir="rtl">
                     <Phone className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                    <span>{u.phone || '—'}</span>
-                  </p>
+                    <span dir="ltr" className="text-xs font-semibold text-slate-800">
+                      {u.phone || '—'}
+                    </span>
+                  </div>
                 </td>
 
                 <td className="p-3.5">
