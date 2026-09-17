@@ -5,7 +5,9 @@ import {
   DailyReportFilter, 
   UnsubmittedUnitInfo, 
   AdminStatsSummary,
-  Attachment
+  Attachment,
+  ReportingUnit,
+  Profile
 } from '../types';
 import { getTodayDateString } from '../utils/dateUtils';
 import { auditService } from './auditService';
@@ -408,9 +410,21 @@ export const reportService = {
    * Track unsubmitted and submitted units for a specific date
    */
   async getUnsubmittedTracker(dateStr: string = getTodayDateString()): Promise<UnsubmittedUnitInfo[]> {
-    const units = mockStore.getUnits ? mockStore.getUnits() : [];
-    const profiles = mockStore.getProfiles ? mockStore.getProfiles() : [];
-    const activeUnits = units.filter(u => u.active);
+    let activeUnits: ReportingUnit[] = [];
+    let profiles: Profile[] = [];
+
+    if (isSupabaseConfigured()) {
+      const [unitsRes, profilesRes] = await Promise.all([
+        supabase.from('reporting_units').select('*').eq('active', true).order('name'),
+        supabase.from('profiles').select('*').eq('active', true)
+      ]);
+      activeUnits = unitsRes.data || [];
+      profiles = profilesRes.data || [];
+    } else {
+      const units = mockStore.getUnits ? mockStore.getUnits() : [];
+      activeUnits = units.filter(u => u.active);
+      profiles = mockStore.getProfiles ? mockStore.getProfiles() : [];
+    }
 
     const reports = await this.getReports({ date: dateStr });
 
