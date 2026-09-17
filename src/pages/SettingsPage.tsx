@@ -12,7 +12,6 @@ import {
   Settings, 
   User, 
   Building2, 
-  Mail, 
   Phone, 
   ShieldCheck, 
   Database, 
@@ -87,8 +86,8 @@ export const SettingsPage: React.FC = () => {
             </div>
 
             <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-100">
-              <span className="text-slate-400 block mb-1">البريد الإلكتروني:</span>
-              <p className="text-sm font-bold text-slate-900">{user.email}</p>
+              <span className="text-slate-400 block mb-1">رقم الهاتف:</span>
+              <p className="text-sm font-bold text-slate-900" dir="ltr">{user.profile.phone || '—'}</p>
             </div>
 
             <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-100">
@@ -163,58 +162,60 @@ export const SettingsPage: React.FC = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs pt-3 border-t border-slate-100">
           <div className="flex items-center justify-between p-3 rounded-lg bg-slate-50">
-            <span className="text-slate-500">البريد المعتمد للتقارير:</span>
-            <span className="font-bold text-slate-800">{HOSPITAL_INFO.contactEmail}</span>
-          </div>
-
-          <div className="flex items-center justify-between p-3 rounded-lg bg-slate-50">
             <span className="text-slate-500">هاتف الاستعلامات:</span>
             <span className="font-bold text-slate-800" dir="ltr">{HOSPITAL_INFO.contactPhone}</span>
           </div>
+
+          <div className="flex items-center justify-between p-3 rounded-lg bg-slate-50">
+            <span className="text-slate-500">نظام التقارير المعتمد:</span>
+            <span className="font-bold text-emerald-700">{HOSPITAL_INFO.systemName}</span>
+          </div>
         </div>
       </Card>
 
-      {/* System & Supabase Connectivity Status */}
-      <Card className="p-6 border-slate-200">
-        <h3 className="text-base font-bold text-slate-800 pb-3 mb-4 border-b border-slate-100 flex items-center gap-2">
-          <Database className="w-5 h-5 text-purple-600" />
-          حالة الاتصال والبيئة السحابية
-        </h3>
+      {/* System & Supabase Connectivity Status (Only for super_admin) */}
+      {user?.profile?.role === 'super_admin' && (
+        <Card className="p-6 border-slate-200">
+          <h3 className="text-base font-bold text-slate-800 pb-3 mb-4 border-b border-slate-100 flex items-center gap-2">
+            <Database className="w-5 h-5 text-purple-600" />
+            حالة الاتصال والبيئة السحابية
+          </h3>
 
-        <div className="flex items-center justify-between p-4 rounded-xl border mb-4 bg-slate-50">
-          <div className="flex items-center gap-3">
-            <div
-              className={`w-3 h-3 rounded-full ${
-                isLive ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'
-              }`}
-            />
-            <div>
-              <p className="text-sm font-bold text-slate-800">
-                {isLive ? 'متصل بقاعدة بيانات Supabase الحية' : 'وضع المعاينة الفورية والتجريب (Demo Store)'}
-              </p>
-              <p className="text-xs text-slate-500 mt-0.5">
-                {isLive
-                  ? 'تم تحميل مفاتيح VITE_SUPABASE_URL وتأمين RLS والتخزين السحابي.'
-                  : 'النظام يعمل حالياً بمحرك بيانات محلي تفاعلي وسينتقل تلقائياً إلى Supabase فور إدخال المفاتيح في ملف .env.'}
-              </p>
+          <div className="flex items-center justify-between p-4 rounded-xl border mb-4 bg-slate-50">
+            <div className="flex items-center gap-3">
+              <div
+                className={`w-3 h-3 rounded-full ${
+                  isLive ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'
+                }`}
+              />
+              <div>
+                <p className="text-sm font-bold text-slate-800">
+                  {isLive ? 'متصل بقاعدة بيانات Supabase الحية' : 'وضع المعاينة الفورية والتجريب (Demo Store)'}
+                </p>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  {isLive
+                    ? 'تم تحميل مفاتيح VITE_SUPABASE_URL وتأمين RLS والتخزين السحابي.'
+                    : 'النظام يعمل حالياً بمحرك بيانات محلي تفاعلي وسينتقل تلقائياً إلى Supabase فور إدخال المفاتيح في ملف .env.'}
+                </p>
+              </div>
             </div>
+
+            <span
+              className={`text-xs font-bold px-3 py-1 rounded-full ${
+                isLive ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
+              }`}
+            >
+              {isLive ? 'Supabase Live' : 'Demo Active'}
+            </span>
           </div>
 
-          <span
-            className={`text-xs font-bold px-3 py-1 rounded-full ${
-              isLive ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
-            }`}
-          >
-            {isLive ? 'Supabase Live' : 'Demo Active'}
-          </span>
-        </div>
-
-        <div className="p-4 rounded-xl bg-slate-900 text-slate-300 text-xs font-mono text-left" dir="ltr">
-          <p className="text-slate-400 mb-1"># Environment Setup (.env):</p>
-          <p>VITE_SUPABASE_URL=https://your-project.supabase.co</p>
-          <p>VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...</p>
-        </div>
-      </Card>
+          <div className="p-4 rounded-xl bg-slate-900 text-slate-300 text-xs font-mono text-left" dir="ltr">
+            <p className="text-slate-400 mb-1"># Environment Setup (.env):</p>
+            <p>VITE_SUPABASE_URL=https://your-project.supabase.co</p>
+            <p>VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...</p>
+          </div>
+        </Card>
+      )}
     </div>
   );
 };

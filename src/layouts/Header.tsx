@@ -202,7 +202,9 @@ export const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
                 >
                   <div className="px-3 py-2 border-b border-slate-100">
                     <p className="text-xs font-bold text-slate-800">{user.profile.full_name}</p>
-                    <p className="text-[11px] text-slate-500 truncate">{user.email}</p>
+                    {user.profile.phone && (
+                      <p className="text-[11px] text-slate-500 truncate" dir="ltr">{user.profile.phone}</p>
+                    )}
                     <div className="mt-1.5">
                       <RoleBadge role={user.profile.role} />
                     </div>

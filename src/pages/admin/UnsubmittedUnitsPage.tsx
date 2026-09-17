@@ -8,7 +8,6 @@ import { formatArabicDate, getTodayDateString } from '../../utils/dateUtils';
 import { 
   AlertTriangle, 
   Phone, 
-  Mail, 
   Building2, 
   Calendar, 
   RefreshCw, 
@@ -135,8 +134,8 @@ export const UnsubmittedUnitsPage: React.FC = () => {
                             <User className="w-3.5 h-3.5 text-slate-400" />
                             {u.full_name}
                           </p>
-                          <div className="flex flex-wrap items-center gap-3 mt-1.5 text-[11px] text-slate-500">
-                            {u.phone && (
+                          {u.phone && (
+                            <div className="flex items-center gap-3 mt-1.5 text-[11px] text-slate-500">
                               <a
                                 href={`tel:${u.phone}`}
                                 className="flex items-center gap-1 text-emerald-700 font-semibold hover:underline"
@@ -144,15 +143,8 @@ export const UnsubmittedUnitsPage: React.FC = () => {
                                 <Phone className="w-3 h-3" />
                                 <span dir="ltr" className="phone-number">{u.phone}</span>
                               </a>
-                            )}
-                            <a
-                              href={`mailto:${u.email}`}
-                              className="flex items-center gap-1 text-sky-700 hover:underline"
-                            >
-                              <Mail className="w-3 h-3" />
-                              {u.email}
-                            </a>
-                          </div>
+                            </div>
+                          )}
                         </div>
                       ))
                     )}
